@@ -159,7 +159,7 @@ def main_app():
                 visit_date = st.date_input("Visit Date *", value=date.today())
                 customer_nature = st.selectbox(
                     "Customer Nature *",
-                    ["Pg", "Horeca", "PushCart", "General Trade","Others"],
+                    ["Pg", "Horeca", "PushCart", "Provision Store","Stand Alone Veg Shop","Others"],
                 )
                 ninjacart_issue = st.selectbox(
                     "Ninjacart Issue Category *",

@@ -1,18 +1,28 @@
+import os
 import streamlit as st
 import pandas as pd
 import mysql.connector
 from datetime import date, datetime
+from dotenv import load_dotenv
+
+load_dotenv()  # loads .env for local dev; no-op on Streamlit Cloud
 
 # ── Page config ──────────────────────────────────────────────────────────────
 st.set_page_config(page_title="Customer Feedback", page_icon="📋", layout="wide")
 
-# ── DB helpers ────────────────────────────────────────────────────────────────
+# ── DB config — st.secrets (Streamlit Cloud) with .env fallback ───────────────
+def _secret(key: str) -> str:
+    try:
+        return st.secrets["database"][key]
+    except Exception:
+        return os.getenv(key, "")
+
 DB_CONFIG = {
-    "host": "116.202.114.156",
-    "port": 3971,
-    "user": "datalake_trw",
-    "password": "Tedd@13332!wq23",
-    "database": "datalake",
+    "host":     _secret("DB_HOST"),
+    "port":     int(_secret("DB_PORT") or 3306),
+    "user":     _secret("DB_USER"),
+    "password": _secret("DB_PASSWORD"),
+    "database": _secret("DB_NAME"),
 }
 
 

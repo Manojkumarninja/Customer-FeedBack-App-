@@ -44,7 +44,10 @@ def ensure_table():
         Customer_Reorder_Intent VARCHAR(10),
         NotOrder_Reason         VARCHAR(50),
         ReMark                  TEXT,
-        CreatedAt       DATETIME DEFAULT CURRENT_TIMESTAMP
+        CreatedBy       VARCHAR(100),
+        CreatedAt       DATETIME DEFAULT CURRENT_TIMESTAMP,
+        UpdatedBy       VARCHAR(100),
+        UpdatedAt       DATETIME ON UPDATE CURRENT_TIMESTAMP
     )
     """
     conn = get_connection()
@@ -60,12 +63,13 @@ def insert_feedback(record: dict):
     INSERT INTO FnV_Customer_Feedback
         (CustomerId, VisitDate, CustomerNature, Ninjacart_Issue_Category,
          Shop_Potential, OrderPlaced, Customer_Reorder_Intent,
-         NotOrder_Reason, ReMark)
+         NotOrder_Reason, ReMark, CreatedBy, CreatedAt, UpdatedBy, UpdatedAt)
     VALUES
         (%(CustomerId)s, %(VisitDate)s, %(CustomerNature)s,
          %(Ninjacart_Issue_Category)s, %(Shop_Potential)s,
          %(OrderPlaced)s, %(Customer_Reorder_Intent)s,
-         %(NotOrder_Reason)s, %(ReMark)s)
+         %(NotOrder_Reason)s, %(ReMark)s,
+         %(CreatedBy)s, %(CreatedAt)s, %(UpdatedBy)s, %(UpdatedAt)s)
     """
     conn = get_connection()
     cur = conn.cursor()
@@ -79,7 +83,8 @@ def fetch_feedback(start: date, end: date) -> pd.DataFrame:
     sql = """
     SELECT CustomerId, VisitDate, CustomerNature, Ninjacart_Issue_Category,
            Shop_Potential, OrderPlaced, Customer_Reorder_Intent,
-           NotOrder_Reason, ReMark, CreatedAt
+           NotOrder_Reason, ReMark,
+           CreatedBy, CreatedAt, UpdatedBy, UpdatedAt
     FROM FnV_Customer_Feedback
     WHERE VisitDate BETWEEN %s AND %s
     ORDER BY VisitDate DESC, CreatedAt DESC
@@ -200,6 +205,8 @@ def main_app():
                 for e in errors:
                     st.error(e)
             else:
+                now = datetime.now()
+                logged_user = st.session_state["username"]
                 record = {
                     "CustomerId": int(customer_id_raw.strip()),
                     "VisitDate": visit_date,
@@ -210,6 +217,10 @@ def main_app():
                     "Customer_Reorder_Intent": reorder_intent,
                     "NotOrder_Reason": not_order_reason if not_order_reason else None,
                     "ReMark": remark.strip() if remark.strip() else None,
+                    "CreatedBy": logged_user,
+                    "CreatedAt": now,
+                    "UpdatedBy": logged_user,
+                    "UpdatedAt": now,
                 }
                 try:
                     insert_feedback(record)

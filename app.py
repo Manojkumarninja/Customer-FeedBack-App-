@@ -99,6 +99,8 @@ def fetch_feedback(start: date, end: date) -> pd.DataFrame:
 USERS = {
     "rohitdinakar@ninjacart.com": "123456",
     "admin@ninjacart.com": "admin@123",
+    "syedzahurulla@ninjacart.com": "syed@123",
+    "ravichandrr@ninjacart.com": "ravi@123",
 }
 
 

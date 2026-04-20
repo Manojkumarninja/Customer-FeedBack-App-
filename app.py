@@ -101,6 +101,8 @@ USERS = {
     "admin@ninjacart.com": "admin@123",
     "syedzahurulla@ninjacart.com": "syed@123",
     "ravichandrr@ninjacart.com": "ravi@123",
+    "baskarp21306@ninjacart.com": "baskar@123",
+    "hemanthkumare@ninjacart.com": "hemanth@123",
 }
 
 
